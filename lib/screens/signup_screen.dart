@@ -53,7 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 1),
                   Center(
                     child: GlassContainer(
-                      padding: const EdgeInsets.all(25),
+                      padding: const EdgeInsets.all(18),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,24 +72,24 @@ class _SignupScreenState extends State<SignupScreen> {
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(color: Colors.white70),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 16),
                             const AuthTextField(
                               hint: 'Full Name',
                               icon: Icons.person_outline_rounded,
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             const AuthTextField(
                               hint: 'Email Address',
                               icon: Icons.mail_outline_rounded,
                               keyboardType: TextInputType.emailAddress,
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             const AuthTextField(
                               hint: 'Phone Number',
                               icon: Icons.phone_outlined,
                               keyboardType: TextInputType.phone,
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             AuthTextField(
                               hint: 'Password',
                               icon: Icons.lock_outline_rounded,
@@ -106,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             AuthTextField(
                               hint: 'Confirm Password',
                               icon: Icons.lock_outline,

@@ -125,8 +125,64 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody() {
-    if (_currentIndex != 0) {
-      // Simple placeholders for other tabs for now.
+    if (_currentIndex == 0) {
+      return SafeArea(
+        child: Builder(
+          builder: (context) => ListView(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              28,
+              20,
+              MediaQuery.of(context).padding.bottom + 56 + 12,
+            ),
+            children: [
+              _buildSearchBar(),
+              const SizedBox(height: 24),
+              _SectionHeader(
+                title: 'Trending Now',
+                subtitle: 'Popular escapes this week',
+              ),
+              const SizedBox(height: 12),
+              _HorizontalDestinations(
+                chips: const ['Bali', 'Paris', 'Tokyo', 'Istanbul'],
+              ),
+              const SizedBox(height: 24),
+              _SectionHeader(
+                title: 'Budget Wise Picks',
+                subtitle: 'Great trips for every wallet',
+              ),
+              const SizedBox(height: 12),
+              _HorizontalCards(
+                items: const [
+                  ('Quick Getaways', 'Under \$300'),
+                  ('Slow Travel', 'Under \$800'),
+                  ('Family Friendly', 'Under \$1200'),
+                ],
+              ),
+              const SizedBox(height: 24),
+              _SectionHeader(
+                title: 'Weekend Ideas',
+                subtitle: 'Short, sweet and spontaneous',
+              ),
+              const SizedBox(height: 12),
+              _HorizontalDestinations(
+                chips: const ['Beach', 'Mountains', 'City Lights', 'Road Trips'],
+              ),
+              const SizedBox(height: 24),
+              _SectionHeader(
+                title: 'Curated For You',
+                subtitle: 'Based on your recent interests',
+              ),
+              const SizedBox(height: 12),
+              _RecommendationCard(),
+            ],
+          ),
+        ),
+      );
+    } else if (_currentIndex == 3) {
+      return const _ProfileTab();
+    } else {
+      // Simple placeholders for remaining tabs for now.
       final labels = ['Home', 'My Trips', 'Favorites', 'Profile'];
       return Center(
         child: Text(
@@ -135,60 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-
-    return SafeArea(
-      child: Builder(
-        builder: (context) => ListView(
-          padding: EdgeInsets.fromLTRB(
-            20,
-            28,
-            20,
-            MediaQuery.of(context).padding.bottom + 56 + 12,
-          ),
-          children: [
-            _buildSearchBar(),
-            const SizedBox(height: 24),
-            _SectionHeader(
-              title: 'Trending Now',
-              subtitle: 'Popular escapes this week',
-            ),
-            const SizedBox(height: 12),
-            _HorizontalDestinations(
-              chips: const ['Bali', 'Paris', 'Tokyo', 'Istanbul'],
-            ),
-            const SizedBox(height: 24),
-            _SectionHeader(
-              title: 'Budget Wise Picks',
-              subtitle: 'Great trips for every wallet',
-            ),
-            const SizedBox(height: 12),
-            _HorizontalCards(
-              items: const [
-                ('Quick Getaways', 'Under \$300'),
-                ('Slow Travel', 'Under \$800'),
-                ('Family Friendly', 'Under \$1200'),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _SectionHeader(
-              title: 'Weekend Ideas',
-              subtitle: 'Short, sweet and spontaneous',
-            ),
-            const SizedBox(height: 12),
-            _HorizontalDestinations(
-              chips: const ['Beach', 'Mountains', 'City Lights', 'Road Trips'],
-            ),
-            const SizedBox(height: 24),
-            _SectionHeader(
-              title: 'Curated For You',
-              subtitle: 'Based on your recent interests',
-            ),
-            const SizedBox(height: 12),
-            _RecommendationCard(),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildSearchBar() {
@@ -498,6 +500,204 @@ class _RecommendationCard extends StatelessWidget {
             filled: true,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProfileTab extends StatelessWidget {
+  const _ProfileTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Profile',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            _ProfileHeaderCard(),
+            const SizedBox(height: 20),
+            _ProfileOptionsCard(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileHeaderCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .04),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: .4),
+            blurRadius: 24,
+            offset: const Offset(0, 16),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [AppColors.primary, AppColors.accent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 40,
+              ),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Traveler',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'traveler@example.com',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white70,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileOptionsCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final divider = Divider(
+      height: 1,
+      color: Colors.white.withValues(alpha: .06),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .03),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: .06)),
+      ),
+      child: Column(
+        children: [
+          _ProfileRow(
+            icon: Icons.edit_outlined,
+            label: 'Edit Profile',
+            onTap: () {},
+          ),
+          divider,
+          _ProfileRow(
+            icon: Icons.card_travel_outlined,
+            label: 'My Bookings',
+            onTap: () {},
+          ),
+          divider,
+          _ProfileRow(
+            icon: Icons.credit_card_outlined,
+            label: 'Payment Methods',
+            onTap: () {},
+          ),
+          divider,
+          _ProfileRow(
+            icon: Icons.settings_outlined,
+            label: 'Settings',
+            onTap: () {},
+          ),
+          divider,
+          _ProfileRow(
+            icon: Icons.help_outline_rounded,
+            label: 'Help & Support',
+            onTap: () {},
+          ),
+          divider,
+          _ProfileRow(
+            icon: Icons.logout,
+            label: 'Logout',
+            onTap: () {},
+            isDestructive: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isDestructive;
+
+  const _ProfileRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDestructive ? Colors.redAccent : Colors.white;
+    final textColor = isDestructive ? Colors.redAccent : Colors.white;
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: Colors.white.withValues(alpha: .6),
+            ),
+          ],
+        ),
       ),
     );
   }
