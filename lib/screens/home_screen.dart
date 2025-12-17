@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../theme/theme_controller.dart';
 import '../widgets/primary_button.dart';
 import 'itinerary_form_screen.dart';
 
@@ -57,7 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: null,
       floatingActionButtonLocation: null,
       bottomNavigationBar: SafeArea(
-        top: false, bottom: true,
+        top: false,
+        bottom: true,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -70,31 +72,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   // Nav bar background
-                  Positioned.fill(
-                    child: Container(
-                      color: AppColors.dark,
-                    ),
-                  ),
+                  Positioned.fill(child: Container(color: AppColors.dark)),
                   // Navigation row
                   Positioned.fill(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: List.generate(4, (i) => Expanded(
-                        child: _BottomItem(
-                          icon: [Icons.home_filled, Icons.card_travel_rounded, Icons.favorite, Icons.person_outline_rounded][i],
-                          label: ['Home', 'My Trips', 'Favorites', 'Profile'][i],
-                          selected: _currentIndex == i,
-                          onTap: () => setState(() => _currentIndex = i),
+                      children: List.generate(
+                        4,
+                        (i) => Expanded(
+                          child: _BottomItem(
+                            icon: [
+                              Icons.home_filled,
+                              Icons.card_travel_rounded,
+                              Icons.favorite,
+                              Icons.person_outline_rounded,
+                            ][i],
+                            label: [
+                              'Home',
+                              'My Trips',
+                              'Favorites',
+                              'Profile',
+                            ][i],
+                            selected: _currentIndex == i,
+                            onTap: () => setState(() => _currentIndex = i),
+                          ),
                         ),
-                      )),
+                      ),
                     ),
                   ),
                   // Floating FAB, half-overlapping above the nav bar
                   Positioned(
                     left: (width - fabSize) / 2,
-                    bottom: -fabSize / 2 + 65, // Half above bar, 8px for a bit more visual cushion
+                    bottom:
+                        -fabSize / 2 +
+                        65, // Half above bar, 8px for a bit more visual cushion
                     child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, ItineraryFormScreen.routeName),
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        ItineraryFormScreen.routeName,
+                      ),
                       child: Container(
                         width: fabSize,
                         height: fabSize,
@@ -110,7 +126,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         child: const Center(
-                          child: Icon(Icons.auto_awesome, color: Colors.white, size: 24),
+                          child: Icon(
+                            Icons.auto_awesome,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
@@ -166,7 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               _HorizontalDestinations(
-                chips: const ['Beach', 'Mountains', 'City Lights', 'Road Trips'],
+                chips: const [
+                  'Beach',
+                  'Mountains',
+                  'City Lights',
+                  'Road Trips',
+                ],
               ),
               const SizedBox(height: 24),
               _SectionHeader(
@@ -519,9 +544,9 @@ class _ProfileTab extends StatelessWidget {
             Text(
               'Profile',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 20),
             _ProfileHeaderCard(),
@@ -564,11 +589,7 @@ class _ProfileHeaderCard extends StatelessWidget {
               ),
             ),
             child: const Center(
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 40,
-              ),
+              child: Icon(Icons.person, color: Colors.white, size: 40),
             ),
           ),
           const SizedBox(width: 20),
@@ -579,16 +600,16 @@ class _ProfileHeaderCard extends StatelessWidget {
                 Text(
                   'Traveler',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'traveler@example.com',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
                 ),
               ],
             ),
@@ -636,7 +657,13 @@ class _ProfileOptionsCard extends StatelessWidget {
           _ProfileRow(
             icon: Icons.settings_outlined,
             label: 'Settings',
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const _ThemeSettingsPage(),
+                ),
+              );
+            },
           ),
           divider,
           _ProfileRow(
@@ -673,7 +700,11 @@ class _ProfileRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isDestructive ? Colors.redAccent : Colors.white;
-    final textColor = isDestructive ? Colors.redAccent : Colors.white;
+    final textColor = isDestructive
+        ? Colors.redAccent
+        : Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : AppColors.lightTextPrimary;
 
     return InkWell(
       onTap: onTap,
@@ -687,14 +718,69 @@ class _ProfileRow extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             Icon(
               Icons.chevron_right,
-              color: Colors.white.withValues(alpha: .6),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withValues(alpha: .6)
+                  : AppColors.lightTextSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeSettingsPage extends StatefulWidget {
+  const _ThemeSettingsPage();
+
+  @override
+  State<_ThemeSettingsPage> createState() => _ThemeSettingsPageState();
+}
+
+class _ThemeSettingsPageState extends State<_ThemeSettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    themeController.addListener(_onThemeChanged);
+  }
+
+  @override
+  void dispose() {
+    themeController.removeListener(_onThemeChanged);
+    super.dispose();
+  }
+
+  void _onThemeChanged() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Appearance'),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.dark_mode_outlined),
+              title: const Text('Dark theme'),
+              subtitle: const Text('Toggle between dark and light experience'),
+              trailing: Switch(
+                value: isDark,
+                onChanged: (_) => themeController.toggle(),
+              ),
             ),
           ],
         ),
