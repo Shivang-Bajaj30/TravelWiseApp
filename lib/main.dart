@@ -9,12 +9,7 @@ import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
 
 void main() {
-  runApp(
-    AnimatedBuilder(
-      animation: themeController,
-      builder: (context, _) => const TravelWiseApp(),
-    ),
-  );
+  runApp(const TravelWiseApp());
 }
 
 class TravelWiseApp extends StatelessWidget {
@@ -22,18 +17,25 @@ class TravelWiseApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = themeController.isLight;
-    return MaterialApp(
-      title: 'TravelWise',
-      debugShowCheckedModeBanner: false,
-      theme: isLight ? _buildLightTheme() : _buildDarkTheme(),
-      initialRoute: WelcomeScreen.routeName,
-      routes: {
-        WelcomeScreen.routeName: (context) => const WelcomeScreen(),
-        LoginScreen.routeName: (context) => const LoginScreen(),
-        SignupScreen.routeName: (context) => const SignupScreen(),
-        HomeScreen.routeName: (context) => const HomeScreen(),
-        ItineraryFormScreen.routeName: (context) => const ItineraryFormScreen(),
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'TravelWise',
+          debugShowCheckedModeBanner: false,
+          theme: _buildLightTheme(),
+          darkTheme: _buildDarkTheme(),
+          themeMode: themeController.isLight ? ThemeMode.light : ThemeMode.dark,
+          initialRoute: WelcomeScreen.routeName,
+          routes: {
+            WelcomeScreen.routeName: (context) => const WelcomeScreen(),
+            LoginScreen.routeName: (context) => const LoginScreen(),
+            SignupScreen.routeName: (context) => const SignupScreen(),
+            HomeScreen.routeName: (context) => const HomeScreen(),
+            ItineraryFormScreen.routeName: (context) =>
+                const ItineraryFormScreen(),
+          },
+        );
       },
     );
   }
@@ -48,20 +50,20 @@ class TravelWiseApp extends StatelessWidget {
       scaffoldBackgroundColor: AppColors.dark,
       canvasColor: AppColors.dark,
       textTheme: GoogleFonts.poppinsTextTheme().apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
+        bodyColor: AppColors.darkTextPrimary,
+        displayColor: AppColors.darkTextPrimary,
       ),
     );
 
     return base.copyWith(
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.dark,
         elevation: 0,
         foregroundColor: Colors.white,
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
-        color: Colors.white.withValues(alpha: .03),
+        color: AppColors.darkCardBackground,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
@@ -86,8 +88,25 @@ class TravelWiseApp extends StatelessWidget {
           ),
         ),
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: const WidgetStatePropertyAll(AppColors.primary),
+        trackColor: WidgetStatePropertyAll(
+          AppColors.primary.withValues(alpha: 0.3),
+        ),
+      ),
+      iconTheme: const IconThemeData(color: Colors.white),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         hintStyle: TextStyle(color: Colors.white.withValues(alpha: .6)),
+        filled: true,
+        fillColor: AppColors.darkCardBackground,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.primary),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+        ),
       ),
     );
   }
@@ -111,7 +130,7 @@ class TravelWiseApp extends StatelessWidget {
       scaffoldBackgroundColor: AppColors.lightBackground,
       canvasColor: AppColors.lightBackground,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.lightAppBar,
         elevation: 0,
         foregroundColor: AppColors.lightAccent,
         centerTitle: false,
@@ -143,6 +162,13 @@ class TravelWiseApp extends StatelessWidget {
           ),
         ),
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: const WidgetStatePropertyAll(AppColors.lightPrimary),
+        trackColor: WidgetStatePropertyAll(
+          AppColors.lightPrimary.withValues(alpha: 0.3),
+        ),
+      ),
+      iconTheme: const IconThemeData(color: AppColors.lightAccent),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         hintStyle: const TextStyle(color: AppColors.lightTextSecondary),
         filled: true,

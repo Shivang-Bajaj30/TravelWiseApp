@@ -16,140 +16,136 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  // TODO: Replace with real user data once auth is wired.
   final String _username = 'Traveler';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        titleSpacing: 8,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome,',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Theme.of(context).textTheme.bodySmall?.color,
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (context, child) {
+        return Scaffold(
+          extendBody: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
+            titleSpacing: 8,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome,',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                ),
+                Text(
+                  _username,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.notifications_none_rounded),
               ),
-            ),
-            Text(
-              _username,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_none_rounded),
+              const SizedBox(width: 8),
+            ],
           ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: _buildBody(),
-      floatingActionButton: null,
-      floatingActionButtonLocation: null,
-      bottomNavigationBar: SafeArea(
-        top: false,
-        bottom: true,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final width = constraints.maxWidth;
-            final fabSize = 44.0;
-            // Bar height
-            final barHeight = 64.0;
-            return SizedBox(
-              height: barHeight, // only the nav bar's own height
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Nav bar background
-                  Positioned.fill(
-                    child: Container(
-                      color:
-                          Theme.of(
+          body: _buildBody(),
+          bottomNavigationBar: SafeArea(
+            top: false,
+            bottom: true,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+                final fabSize = 44.0;
+                final barHeight = 64.0;
+                final isDark = !themeController.isLight;
+
+                return SizedBox(
+                  height: barHeight,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned.fill(
+                        child: Container(
+                          color: Theme.of(
                             context,
-                          ).bottomNavigationBarTheme.backgroundColor ??
-                          Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ),
-                  // Navigation row
-                  Positioned.fill(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: List.generate(
-                        4,
-                        (i) => Expanded(
-                          child: _BottomItem(
-                            icon: [
-                              Icons.home_filled,
-                              Icons.card_travel_rounded,
-                              Icons.favorite,
-                              Icons.person_outline_rounded,
-                            ][i],
-                            label: [
-                              'Home',
-                              'My Trips',
-                              'Favorites',
-                              'Profile',
-                            ][i],
-                            selected: _currentIndex == i,
-                            onTap: () => setState(() => _currentIndex = i),
-                          ),
+                          ).bottomNavigationBarTheme.backgroundColor,
                         ),
                       ),
-                    ),
-                  ),
-                  // Floating FAB, half-overlapping above the nav bar
-                  Positioned(
-                    left: (width - fabSize) / 2,
-                    bottom:
-                        -fabSize / 2 +
-                        65, // Half above bar, 8px for a bit more visual cushion
-                    child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        ItineraryFormScreen.routeName,
-                      ),
-                      child: Container(
-                        width: fabSize,
-                        height: fabSize,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.accent
-                              : AppColors.lightPrimary,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black38,
-                              blurRadius: 8,
-                              offset: Offset(0, 3),
+                      Positioned.fill(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(
+                            4,
+                            (i) => Expanded(
+                              child: _BottomItem(
+                                icon: [
+                                  Icons.home_filled,
+                                  Icons.card_travel_rounded,
+                                  Icons.favorite,
+                                  Icons.person_outline_rounded,
+                                ][i],
+                                label: [
+                                  'Home',
+                                  'My Trips',
+                                  'Favorites',
+                                  'Profile',
+                                ][i],
+                                selected: _currentIndex == i,
+                                onTap: () => setState(() => _currentIndex = i),
+                              ),
                             ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.auto_awesome,
-                            color: Colors.white,
-                            size: 24,
                           ),
                         ),
                       ),
-                    ),
+                      Positioned(
+                        left: (width - fabSize) / 2,
+                        bottom: -fabSize / 2 + 65,
+                        child: GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            ItineraryFormScreen.routeName,
+                          ),
+                          child: Container(
+                            width: fabSize,
+                            height: fabSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isDark
+                                  ? AppColors.accent
+                                  : AppColors.lightPrimary,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black38,
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.auto_awesome,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -165,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               MediaQuery.of(context).padding.bottom + 56 + 12,
             ),
             children: [
-              _buildSearchBar(),
+              _buildSearchBar(context),
               const SizedBox(height: 24),
               _SectionHeader(
                 title: 'Trending Now',
@@ -216,40 +212,54 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (_currentIndex == 3) {
       return const _ProfileTab();
     } else {
-      // Simple placeholders for remaining tabs for now.
       final labels = ['Home', 'My Trips', 'Favorites', 'Profile'];
       return Center(
         child: Text(
           '${labels[_currentIndex]} coming soon',
-          style: const TextStyle(color: Colors.white70, fontSize: 16),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       );
     }
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context) {
+    final isDark = !themeController.isLight;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .05),
+        color: isDark
+            ? Colors.white.withValues(alpha: .05)
+            : AppColors.lightCard,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: .08)),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: .08)
+              : AppColors.lightAccent.withValues(alpha: .2),
+        ),
       ),
       child: Row(
         children: [
-          Icon(Icons.search_rounded, color: Colors.white.withValues(alpha: .9)),
+          Icon(
+            Icons.search_rounded,
+            color: isDark
+                ? Colors.white.withValues(alpha: .9)
+                : AppColors.lightTextPrimary,
+          ),
           const SizedBox(width: 10),
-          const Expanded(
+          Expanded(
             child: Text(
               'Search destinations, themes, budgets...',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: TextStyle(
+                color: isDark ? Colors.white70 : AppColors.lightTextSecondary,
+                fontSize: 14,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: isDark ? AppColors.primary : AppColors.lightPrimary,
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Text(
@@ -262,50 +272,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    return BottomAppBar(
-      color: AppColors.dark,
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 6,
-      child: SizedBox(
-        height: 64,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _BottomItem(
-              icon: Icons.home_filled,
-              label: 'Home',
-              selected: _currentIndex == 0,
-              onTap: () => setState(() => _currentIndex = 0),
-            ),
-            SizedBox(
-              width: 107,
-              child: _BottomItem(
-                icon: Icons.card_travel_rounded,
-                label: 'My Trips',
-                selected: _currentIndex == 1,
-                onTap: () => setState(() => _currentIndex = 1),
-              ),
-            ),
-            _BottomItem(
-              icon: Icons.favorite,
-              label: 'Favorites',
-              selected: _currentIndex == 2,
-              onTap: () => setState(() => _currentIndex = 2),
-            ),
-            const SizedBox(width: 0, height: 20), // space for FABs
-            _BottomItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              selected: _currentIndex == 3,
-              onTap: () => setState(() => _currentIndex = 3),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -392,6 +358,7 @@ class _HorizontalDestinations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
     return SizedBox(
       height: 42,
       child: ListView.separated(
@@ -401,14 +368,20 @@ class _HorizontalDestinations extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: .06),
+              color: isDark
+                  ? Colors.white.withValues(alpha: .06)
+                  : AppColors.lightCard,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withValues(alpha: .12)),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: .12)
+                    : AppColors.lightAccent.withValues(alpha: .2),
+              ),
             ),
             child: Text(
               label,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: isDark ? Colors.white : AppColors.lightTextPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -429,6 +402,7 @@ class _HorizontalCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
     return SizedBox(
       height: 140,
       child: ListView.separated(
@@ -440,20 +414,26 @@ class _HorizontalCards extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1F2937), Color(0xFF111827)],
+                colors: isDark
+                    ? [const Color(0xFF1F2937), const Color(0xFF111827)]
+                    : [AppColors.lightCard, AppColors.lightBackground],
               ),
-              border: Border.all(color: Colors.white.withValues(alpha: .1)),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: .1)
+                    : AppColors.lightAccent.withValues(alpha: .1),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : AppColors.lightTextPrimary,
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
@@ -461,21 +441,28 @@ class _HorizontalCards extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(
+                    color: isDark
+                        ? Colors.white70
+                        : AppColors.lightTextSecondary,
+                    fontSize: 12,
+                  ),
                 ),
                 const Spacer(),
                 Row(
-                  children: const [
+                  children: [
                     Icon(
                       Icons.trending_up_rounded,
                       size: 18,
-                      color: AppColors.accent,
+                      color: isDark ? AppColors.accent : AppColors.lightPrimary,
                     ),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text(
                       'Smart picks',
                       style: TextStyle(
-                        color: AppColors.accent,
+                        color: isDark
+                            ? AppColors.accent
+                            : AppColors.lightPrimary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -496,12 +483,15 @@ class _HorizontalCards extends StatelessWidget {
 class _RecommendationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.accent],
+        gradient: LinearGradient(
+          colors: isDark
+              ? [AppColors.primary, AppColors.accent]
+              : [AppColors.lightPrimary, AppColors.lightSecondary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -549,10 +539,9 @@ class _ProfileTab extends StatelessWidget {
           children: [
             Text(
               'Profile',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 20),
             _ProfileHeaderCard(),
@@ -568,6 +557,7 @@ class _ProfileTab extends StatelessWidget {
 class _ProfileHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       decoration: BoxDecoration(
@@ -589,7 +579,7 @@ class _ProfileHeaderCard extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: Theme.of(context).brightness == Brightness.dark
+                colors: isDark
                     ? [AppColors.primary, AppColors.accent]
                     : [AppColors.lightPrimary, AppColors.lightSecondary],
                 begin: Alignment.topLeft,
@@ -628,16 +618,25 @@ class _ProfileHeaderCard extends StatelessWidget {
 class _ProfileOptionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = !themeController.isLight;
     final divider = Divider(
       height: 1,
-      color: Colors.white.withValues(alpha: .06),
+      color: isDark
+          ? Colors.white.withValues(alpha: .06)
+          : AppColors.lightAccent.withValues(alpha: .1),
     );
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .03),
+        color: isDark
+            ? Colors.white.withValues(alpha: .03)
+            : AppColors.lightCard,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: .06)),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: .06)
+              : AppColors.lightAccent.withValues(alpha: .1),
+        ),
       ),
       child: Column(
         children: [
@@ -708,9 +707,7 @@ class _ProfileRow extends StatelessWidget {
         : (isDark ? Colors.white : AppColors.lightTextPrimary);
     final textColor = isDestructive
         ? Colors.redAccent
-        : Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : AppColors.lightTextPrimary;
+        : (isDark ? Colors.white : AppColors.lightTextPrimary);
 
     return InkWell(
       onTap: onTap,
@@ -731,7 +728,7 @@ class _ProfileRow extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: Theme.of(context).brightness == Brightness.dark
+              color: isDark
                   ? Colors.white.withValues(alpha: .6)
                   : AppColors.lightTextSecondary,
             ),
@@ -751,49 +748,40 @@ class _ThemeSettingsPage extends StatefulWidget {
 
 class _ThemeSettingsPageState extends State<_ThemeSettingsPage> {
   @override
-  void initState() {
-    super.initState();
-    themeController.addListener(_onThemeChanged);
-  }
-
-  @override
-  void dispose() {
-    themeController.removeListener(_onThemeChanged);
-    super.dispose();
-  }
-
-  void _onThemeChanged() {
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isDark = !themeController.isLight;
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (context, child) {
+        final isDark = !themeController.isLight;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Appearance')),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(
-                isDark ? Icons.dark_mode : Icons.light_mode,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              title: const Text('Dark theme'),
-              subtitle: const Text('Toggle between dark and light experience'),
-              trailing: Switch(
-                value: isDark,
-                onChanged: (_) {
-                  themeController.toggle();
-                },
-              ),
+        return Scaffold(
+          appBar: AppBar(title: const Text('Appearance')),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    isDark ? Icons.dark_mode : Icons.light_mode,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  title: const Text('Dark theme'),
+                  subtitle: const Text(
+                    'Toggle between dark and light experience',
+                  ),
+                  trailing: Switch(
+                    value: isDark,
+                    onChanged: (_) {
+                      themeController.toggle();
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
