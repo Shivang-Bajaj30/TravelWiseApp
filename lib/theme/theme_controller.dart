@@ -11,5 +11,3 @@ class ThemeController extends ChangeNotifier {
 }
 
 final ThemeController themeController = ThemeController();
-
-

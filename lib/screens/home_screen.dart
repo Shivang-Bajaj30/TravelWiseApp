@@ -23,9 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      backgroundColor: AppColors.dark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.dark,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         titleSpacing: 8,
         title: Column(
@@ -33,16 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Welcome,',
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge?.copyWith(color: Colors.white70),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              ),
             ),
             Text(
               _username,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -72,7 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   // Nav bar background
-                  Positioned.fill(child: Container(color: AppColors.dark)),
+                  Positioned.fill(
+                    child: Container(
+                      color:
+                          Theme.of(
+                            context,
+                          ).bottomNavigationBarTheme.backgroundColor ??
+                          Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                  ),
                   // Navigation row
                   Positioned.fill(
                     child: Row(
@@ -114,9 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         width: fabSize,
                         height: fabSize,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.accent,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppColors.accent
+                              : AppColors.lightPrimary,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black38,
@@ -317,7 +326,10 @@ class _BottomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.accent : Colors.white70;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = selected
+        ? (isDark ? AppColors.accent : AppColors.lightPrimary)
+        : (isDark ? Colors.white70 : AppColors.lightTextSecondary);
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: onTap,
@@ -359,18 +371,12 @@ class _SectionHeader extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.white70),
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 2),
+            Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
         TextButton(onPressed: () {}, child: const Text('View all')),
@@ -565,7 +571,7 @@ class _ProfileHeaderCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .04),
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -580,10 +586,12 @@ class _ProfileHeaderCard extends StatelessWidget {
           Container(
             width: 72,
             height: 72,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.accent],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [AppColors.primary, AppColors.accent]
+                    : [AppColors.lightPrimary, AppColors.lightSecondary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -600,16 +608,13 @@ class _ProfileHeaderCard extends StatelessWidget {
                 Text(
                   'Traveler',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'traveler@example.com',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -659,9 +664,7 @@ class _ProfileOptionsCard extends StatelessWidget {
             label: 'Settings',
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const _ThemeSettingsPage(),
-                ),
+                MaterialPageRoute(builder: (_) => const _ThemeSettingsPage()),
               );
             },
           ),
@@ -699,7 +702,10 @@ class _ProfileRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? Colors.redAccent : Colors.white;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = isDestructive
+        ? Colors.redAccent
+        : (isDark ? Colors.white : AppColors.lightTextPrimary);
     final textColor = isDestructive
         ? Colors.redAccent
         : Theme.of(context).brightness == Brightness.dark
@@ -765,21 +771,24 @@ class _ThemeSettingsPageState extends State<_ThemeSettingsPage> {
     final isDark = !themeController.isLight;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appearance'),
-      ),
+      appBar: AppBar(title: const Text('Appearance')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.dark_mode_outlined),
+              leading: Icon(
+                isDark ? Icons.dark_mode : Icons.light_mode,
+                color: Theme.of(context).iconTheme.color,
+              ),
               title: const Text('Dark theme'),
               subtitle: const Text('Toggle between dark and light experience'),
               trailing: Switch(
                 value: isDark,
-                onChanged: (_) => themeController.toggle(),
+                onChanged: (_) {
+                  themeController.toggle();
+                },
               ),
             ),
           ],

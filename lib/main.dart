@@ -22,11 +22,11 @@ class TravelWiseApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = themeController.isLight;
     return MaterialApp(
-      key: ValueKey(themeController.isLight),
       title: 'TravelWise',
       debugShowCheckedModeBanner: false,
-      theme: _buildDarkTheme(),
+      theme: isLight ? _buildLightTheme() : _buildDarkTheme(),
       initialRoute: WelcomeScreen.routeName,
       routes: {
         WelcomeScreen.routeName: (context) => const WelcomeScreen(),
@@ -108,6 +108,8 @@ class TravelWiseApp extends StatelessWidget {
     );
 
     return base.copyWith(
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      canvasColor: AppColors.lightBackground,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
