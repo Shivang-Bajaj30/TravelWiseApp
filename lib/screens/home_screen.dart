@@ -168,9 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 subtitle: 'Popular escapes this week',
               ),
               const SizedBox(height: 12),
-              _HorizontalDestinations(
-                chips: const ['Bali', 'Paris', 'Tokyo', 'Istanbul'],
-              ),
+              _HorizontalDestinations(chips: const ['Bali', 'Paris', 'Tokyo']),
               const SizedBox(height: 24),
               _SectionHeader(
                 title: 'Budget Wise Picks',
@@ -356,39 +354,104 @@ class _HorizontalDestinations extends StatelessWidget {
 
   const _HorizontalDestinations({required this.chips});
 
+  String _getImageUrl(String destination) {
+    final images = {
+      'Bali':
+          'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&h=300&fit=crop',
+      'Paris':
+          'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop',
+      'Tokyo':
+          'https://plus.unsplash.com/premium_photo-1661914240950-b0124f20a5c1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'Beach':
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'Mountains':
+          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      'City Lights':
+          'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&h=300&fit=crop',
+      'Road Trips':
+          'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+    };
+    return images[destination] ??
+        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = !themeController.isLight;
     return SizedBox(
-      height: 42,
+      height: 120,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final label = chips[index];
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            width: 140,
             decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withValues(alpha: .06)
-                  : AppColors.lightCard,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: .12)
-                    : AppColors.lightAccent.withValues(alpha: .2),
-              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: .15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    _getImageUrl(label),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: .06)
+                            : AppColors.lightCard,
+                      );
+                    },
+                  ),
+                  // Gradient overlay for text readability
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: .6),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Text overlay
+                  Positioned(
+                    bottom: 12,
+                    left: 12,
+                    right: 12,
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
         },
-        separatorBuilder: (context, index) => const SizedBox(width: 10),
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemCount: chips.length,
       ),
     );
@@ -400,76 +463,151 @@ class _HorizontalCards extends StatelessWidget {
 
   const _HorizontalCards({required this.items});
 
+  String _getImageUrl(String title) {
+    final images = {
+      'Quick Getaways':
+          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      'Slow Travel':
+          'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+      'Family Friendly':
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop',
+    };
+    return images[title] ??
+        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = !themeController.isLight;
     return SizedBox(
-      height: 140,
+      height: 160,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final (title, subtitle) = items[index];
           return Container(
-            width: 200,
-            padding: const EdgeInsets.all(16),
+            width: 220,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [AppColors.lightCard, AppColors.lightBackground],
-              ),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: .1)
-                    : AppColors.lightAccent.withValues(alpha: .1),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: isDark
-                        ? Colors.white70
-                        : AppColors.lightTextSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-                const Spacer(),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.trending_up_rounded,
-                      size: 18,
-                      color: isDark ? AppColors.accent : AppColors.lightPrimary,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Smart picks',
-                      style: TextStyle(
-                        color: isDark
-                            ? AppColors.accent
-                            : AppColors.lightPrimary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: .2),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    _getImageUrl(title),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isDark
+                                ? [
+                                    const Color(0xFF1F2937),
+                                    const Color(0xFF111827),
+                                  ]
+                                : [
+                                    AppColors.lightCard,
+                                    AppColors.lightBackground,
+                                  ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // Dark overlay for text readability
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: .7),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Content
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black54,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black54,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.trending_up_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Smart picks',
+                              style: TextStyle(
+                                color: isDark
+                                    ? AppColors.accent
+                                    : AppColors.lightPrimary,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.black54,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

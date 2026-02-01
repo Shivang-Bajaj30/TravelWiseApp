@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
@@ -8,8 +9,21 @@ import 'screens/itinerary_form_screen.dart';
 import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
 
-void main() {
-  runApp(const TravelWiseApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    // .env file might not exist or failed to load
+    // This is okay for development, but API calls will fail
+    debugPrint('Warning: Could not load .env file: $e');
+  }
+  runApp(
+    AnimatedBuilder(
+      animation: themeController,
+      builder: (context, _) => const TravelWiseApp(),
+    ),
+  );
 }
 
 class TravelWiseApp extends StatelessWidget {
